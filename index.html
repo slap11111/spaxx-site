@@ -3,103 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FXTAL • ETERNAL CORE • Ω² FINAL ARCHIVE</title>
+    <title>HXZE • ETERNAL CORE • Ω²</title>
     <style>
-        body{
-            background:#000;
-            color:#0f0;
-            font-family:'Consolas',monospace;
-            padding:40px 20px;
-            min-height:100vh;
-            background:radial-gradient(circle at 50% 50%, #001a00 0%, #000 70%);
-        }
-        .container{max-width:1800px;margin:auto;}
-        h1{
-            font-size:5rem;
-            text-align:center;
-            margin:60px 0;
-            background:linear-gradient(90deg,#f00,#0ff,#f00);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            text-shadow:0 0 60px #f00;
-        }
-        .accordion{
-            display:grid;
-            gap:18px;
-            margin-top:40px;
-        }
-        .item{
-            position:relative;
-            background:#111;
-            border:2px solid #0f0;
-            border-radius:16px;
-            overflow:hidden;
-            box-shadow:0 0 30px rgba(0,255,0,0.3);
-            transition:transform 0.3s ease, box-shadow 0.4s ease;
-        }
-        .item:hover{
-            transform:translateY(-8px);
-            box-shadow:0 0 60px rgba(0,255,0,0.6);
-        }
-        .shine{
-            position:absolute;
-            top:0; left:-100%;
-            width:60%;
-            height:100%;
-            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transform:skewX(-25deg);
-            transition:left 0.8s ease;
-            pointer-events:none;
-        }
-        .item:hover .shine{
-            left:120%;
-        }
-        label{
-            display:block;
-            padding:28px 40px;
-            font-size:2.4rem;
-            color:#00ffff;
-            background:#111;
-            cursor:pointer;
-            position:relative;
-            z-index:2;
-            text-shadow:0 0 20px #0ff;
-            transition:background 0.4s, color 0.4s;
-        }
-        .item:hover label{
-            color:#0f0;
-            background:#000;
-        }
-        input[type="checkbox"]{
-            display:none;
-        }
-        .content{
-            max-height:0;
-            overflow:hidden;
-            transition:max-height 0.8s cubic-bezier(0.65,0,0.35,1), padding 0.8s ease;
-            background:#000;
-        }
-        input[type="checkbox"]:checked ~ .content{
-            max-height:5000px;
-            padding:40px;
-        }
-        pre{
-            margin:0;
-            padding:20px;
-            font-size:1.32rem;
-            line-height:1.7;
-            color:#0ff;
-            white-space:pre-wrap;
-            word-wrap:break-word;
-            background:#000;
-        }
-        .footer{
-            text-align:center;
-            margin:120px 0 60px;
-            font-size:2.8rem;
-            color:#f00;
-            text-shadow:0 0 50px #f00;
-        }
+        body{background:#000;color:#0f0;font-family:'Consolas',monospace;margin:0;padding:40px 20px;min-height:100vh;background:radial-gradient(circle at 50% 50%,#001100 0%,#000 80%);}
+        .container{max-width:1400px;margin:auto;}
+        h1{font-size:5.5rem;text-align:center;margin:60px 0 80px;background:linear-gradient(90deg,#f00,#0ff,#f00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 70px #f00;}
+        .accordion{display:flex;flex-direction:column;gap:22px;}
+        .card{position:relative;border:3px solid #0f8;border-radius:20px;overflow:hidden;background:#0a0a0a;box-shadow:0 8px 40px rgba(0,255,0,0.2);transition:all 0.4s ease;}
+        .card:hover{transform:translateY(-12px);box-shadow:0 20px 80px rgba(0,255,255,0.4);}
+        .shine{position:absolute;top:0;left:-150%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.5),transparent);transform:skewX(-20deg);transition:left 0.9s ease;pointer-events:none;}
+        .card:hover .shine{left:150%;}
+        .trigger{display:block;width:100%;padding:32px 50px;font-size:2.6rem;font-weight:bold;color:#00ffff;background:linear-gradient(145deg,#111,#000);text-align:left;cursor:pointer;border:none;outline:none;text-shadow:0 0 20px #0ff;transition:all 0.4s ease;position:relative;z-index:2;}
+        .trigger:hover{color:#0f0;background:#000;text-shadow:0 0 30px #0f0;}
+        .trigger::after{content:"Expand";float:right;font-size:1.6rem;color:#0ff;transition:0.4s;}
+        input[type="checkbox"]{display:none;}
+        input[type="checkbox"]:checked + .trigger::after{content:"Collapse";}
+        .content{max-height:0;overflow:hidden;background:#000;transition:max-height 1s cubic-bezier(0.6,0,0.2,1),padding 0.8s ease;}
+        input[type="checkbox"]:checked ~ .content{max-height:12000px;padding:45px 50px;}
+        pre{margin:0;font-size:1.35rem;line-height:1.75;color:#0ff;white-space:pre-wrap;word-wrap:break-word;}
+        .footer{text-align:center;margin:140px auto 60px;font-size:3rem;color:#f00;text-shadow:0 0 60px #f00;}
     </style>
 </head>
 <body>
@@ -108,9 +30,9 @@
 
     <div class="accordion">
 
-        <div class="item">
-            <input type="checkbox" id="item1">
-            <label for="item1">01 • COMPLETE PROCESS LIST (380+ processes – tasklist /v)</label>
+        <div class="card">
+            <input type="checkbox" id="c1">
+            <label class="trigger" for="c1">01 • COMPLETE PROCESS LIST (tasklist /v)</label>
             <div class="shine"></div>
             <div class="content">
                 <pre>Image Name                     PID Session Name        Session#    Mem Usage
@@ -331,12 +253,675 @@ UnityCrashHandler64.exe      18728 Console                 1    27,432 K</pre>
             </div>
         </div>
 
-        <!-- Repeat the same pattern for all other sections (02–07) with identical structure -->
-        <!-- For brevity in this response, only the first and last are fully shown -->
+        <div class="card">
+            <input type="checkbox" id="c2">
+            <label class="trigger" for="c2">02 • SMB WORKSTATION STATISTICS (\\FXTAL)</label>
+            <div class="shine"></div>
+            <div class="content">
+                <pre>Workstation Statistics for \\FXTAL
 
-        <div class="item">
-            <input type="checkbox" id="item7">
-            <label for="item7">07 • COMPLETE NETWORK CONFIGURATION (ipconfig /all – verbatim)</label>
+Statistics since 12/3/2025 3:16:13 PM
+
+  Bytes received                    308162
+  Server Message Blocks (SMBs) received     4
+  Bytes transmitted                 304718
+  Server Message Blocks (SMBs) transmitted  0
+  Read operations                        0
+  Write operations                       0
+  Raw reads denied                       0
+  Raw writes denied                      0
+  Network errors                         0
+  Connections made                       0
+  Reconnections made                     0
+  Server disconnects                     0
+  Sessions started                       0
+  Hung sessions                          0
+  Failed sessions                        0
+  Failed operations                      0
+  Use count                             18
+  Failed use count                       0
+
+The command completed successfully.</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <input type="checkbox" id="c3">
+            <label class="trigger" for="c3">03 • WIFI PROFILES + PLAINTEXT KEYS (netsh wlan show profiles key=clear)</label>
+            <div class="shine"></div>
+            <div class="content">
+                <pre>Profiles on interface Wi-Fi 2:
+Group policy profiles (read only)
+---------------------------------
+    <None>
+User profiles
+-------------
+    All User Profile     : Galaxy A35 5G 0355
+    All User Profile     : SpectrumSetup-0FF7
+    All User Profile     : TMOBILE-33D8
+SSID:
+Profile "key=clear" is not found on the system.
+SSID:
+Profile "key=clear" is not found on the system.
+SSID: Galaxy
+Profile "Galaxy" is not found on the system.
+SSID: SpectrumSetup-0FF7
+Profile SpectrumSetup-0FF7 on interface Wi-Fi 2:
+=======================================================================
+Applied: All User Profile
+Profile information
+-------------------
+    Version                : 1
+    Type                   : Wireless LAN
+    Name                   : SpectrumSetup-0FF7
+    Control options        :
+        Connection mode    : Connect automatically
+        Network broadcast  : Connect only if this network is broadcasting
+        AutoSwitch         : Do not switch to other networks
+        MAC Randomization  : Disabled
+Connectivity settings
+---------------------
+    Number of SSIDs        : 1
+    SSID name              : "SpectrumSetup-0FF7"
+    Network type           : Infrastructure
+    Radio type             : [ Any Radio Type ]
+    Vendor extension       : Not present
+Security settings
+-----------------
+    Authentication         : WPA3-Personal
+    Cipher                 : GCMP-256
+    Authentication         : WPA3-Personal
+    Cipher                 : GCMP
+    Authentication         : WPA3-Personal
+    Cipher                 : CCMP
+    Authentication         : WPA2-Personal
+    Cipher                 : GCMP
+    Authentication         : WPA2-Personal
+    Cipher                 : CCMP
+    Security key           : Present
+    Key Content            : leadingswitch293
+Cost settings
+-------------
+    Cost                   : Unrestricted
+    Congested              : No
+    Approaching Data Limit : No
+.relative Data Limit        : No
+    Roaming                : No
+    Cost Source            : Default
+
+SSID: TMOBILE-33D8
+Profile TMOBILE-33D8 on interface Wi-Fi 2:
+=======================================================================
+Applied: All User Profile
+Profile information
+-------------------
+    Version                : 1
+    Type                   : Wireless LAN
+    Name                   : TMOBILE-33D8
+    Control options        :
+        Connection mode    : Connect manually
+        Network broadcast  : Connect only if this network is broadcasting
+        AutoSwitch         : Do not switch to other networks
+        MAC Randomization  : Disabled
+Connectivity settings
+---------------------
+    Number of SSIDs        : 1
+    SSID name              : "TMOBILE-33D8"
+    Network type           : Infrastructure
+    Radio type             : [ Any Radio Type ]
+    Vendor extension       : Not present
+Security settings
+-----------------
+    Authentication         : WPA3-Personal
+    Cipher                 : GCMP-256
+    Authentication         : WPA3-Personal
+    Cipher                 : GCMP
+    Authentication         : WPA3-Personal
+    Cipher                 : CCMP
+    Security key           : Present
+    Key Content            : Bubblebutt626
+Cost settings
+-------------
+    Cost                   : Unrestricted
+    Congested              : No
+    Approaching Data Limit : No
+    Over Data Limit        : No
+    Roaming                : No
+    Cost Source            : Default</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <input type="checkbox" id="c4">
+            <label class="trigger" for="c4">04 • WINDOWS DEFENDER STATE (Get-MpComputerStatus)</label>
+            <div class="shine"></div>
+            <div class="content">
+                <pre>AMEngineVersion : 1.1.25100.9002
+AMProductVersion : 4.18.25100.9008
+AMRunningMode : Passive Mode
+AMServiceEnabled : True
+AMServiceVersion : 4.18.25100.9008
+AntispywareEnabled : True
+AntispywareSignatureAge : 0
+AntispywareSignatureLastUpdated : 12/3/2025 9:33:45 AM
+AntispywareSignatureVersion : 1.441.699.0
+AntivirusEnabled : True
+AntivirusSignatureAge : 0
+AntivirusSignatureLastUpdated : 12/3/2025 9:33:45 AM
+AntivirusSignatureVersion : 1.441.699.0
+BehaviorMonitorEnabled : False
+ComputerID : 587504B5-2EA1-1D71-9115-29B4427F537F
+ComputerState : 0
+DefenderSignaturesOutOfDate : False
+DeviceControlDefaultEnforcement :
+DeviceControlPoliciesLastUpdated : 12/31/1600 7:00:00 PM
+DeviceControlState : Disabled
+FullScanAge : 4294967295
+FullScanEndTime :
+FullScanOverdue : False
+FullScanRequired : False
+FullScanSignatureVersion :
+FullScanStartTime :
+InitializationProgress : ServiceStartedSuccessfully
+IoavProtectionEnabled : False
+IsTamperProtected : True
+IsVirtualMachine : False
+LastFullScanSource : 0
+LastQuickScanSource : 2
+NISEnabled : False
+NISEngineVersion : 1.1.25100.9002
+NISSignatureAge : 65535
+NISSignatureLastUpdated :
+NISSignatureVersion :
+OnAccessProtectionEnabled : False
+ProductStatus : 524288
+QuickScanAge : 8
+QuickScanEndTime : 11/25/2025 6:23:36 PM
+QuickScanOverdue : False
+QuickScanSignatureVersion : 1.441.488.0
+QuickScanStartTime : 11/25/2025 6:23:12 PM
+RealTimeProtectionEnabled : False
+RealTimeScanDirection : 0
+RebootRequired : False
+SmartAppControlExpiration : 12/25/2025 4:13:16 PM (2025-12-25T21:13:16Z)
+SmartAppControlState : Eval
+TamperProtectionSource : Signatures
+TDTCapable : N/A
+TDTMode : N/A
+TDTSiloType : N/A
+TDTStatus : N/A
+TDTTelemetry : N/A
+TroubleShootingDailyMaxQuota :
+TroubleShootingDailyQuotaLeft :
+TroubleShootingEndTime :
+TroubleShootingExpirationLeft :
+TroubleShootingMode :
+TroubleShootingModeSource :
+TroubleShootingQuotaResetTime :
+TroubleShootingStartTime :
+PSComputerName :</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <input type="checkbox" id="c5">
+            <label class="trigger" for="c5">05 • USER GROUPS & SIDs (whoami /groups /fo list)</label>
+            <div class="shine"></div>
+            <div class="content">
+                <pre>GROUP INFORMATION
+-----------------
+Group Name Type SID Attributes
+============================================================= ================ ============================================================================================================ ==================================================
+Mandatory Label\Medium Mandatory Level Label S-1-16-8192
+Everyone Well-known group S-1-1-0 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Local account and member of Administrators group Well-known group S-1-5-114 Group used for deny only
+BUILTIN\Administrators Alias S-1-5-32-544 Group used for deny only
+BUILTIN\Users Alias S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\INTERACTIVE Well-known group S-1-5-4 Mandatory group, Enabled by default, Enabled group
+CONSOLE LOGON Well-known group S-1-2-1 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users Well-known group S-1-5-11 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization Well-known group S-1-5-15 Mandatory group, Enabled by default, Enabled group
+MicrosoftAccount\latingangisbtter@gmail.com User S-1-11-96-3623454863-58364-18864-2661722203-1597581903-2961981065-3421486976-1480624426-3294124652-510163933 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Local account Well-known group S-1-5-113 Mandatory group, Enabled by default, Enabled group
+LOCAL Well-known group S-1-2-0 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Cloud Account Authentication Well-known group S-1-5-64-36 Mandatory group, Enabled by default, Enabled group</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <input type="checkbox" id="c6">
+            <label class="trigger" for="c6">06 • ALL LOADED KERNEL DRIVERS (driverquery)</label>
+            <div class="shine"></div>
+            <div class="content">
+                <pre>Module Name Display Name Driver Type Link Date
+============ ====================== ============= ======================
+1394ohci 1394 OHCI Compliant Ho Kernel
+3ware 3ware Kernel 5/18/2015 6:28:03 PM
+ACPI Microsoft ACPI Driver Kernel
+AcpiAudioCom ACPI Audio Compositor Kernel
+AcpiDev ACPI Devices driver Kernel
+acpiex Microsoft ACPIEx Drive Kernel
+acpipagr ACPI Processor Aggrega Kernel
+AcpiPmi ACPI Power Meter Drive Kernel
+acpitime ACPI Wake Alarm Driver Kernel
+Acx01000 Acx01000 Kernel
+ADP80XX ADP80XX Kernel 4/9/2015 4:49:48 PM
+AFD Ancillary Function Dri Kernel
+afunix afunix Kernel
+ahcache Application Compatibil Kernel
+amdgpio2 AMD GPIO Client Driver Kernel 9/29/2019 11:56:01 PM
+amdi2c AMD I2C Controller Ser Kernel 3/20/2019 12:57:33 AM
+AmdK8 AMD K8 Processor Drive Kernel
+AmdPPM AMD Processor Driver Kernel
+amdsata amdsata Kernel 5/14/2015 8:14:52 AM
+amdsbs amdsbs Kernel 12/11/2012 4:21:44 PM
+amdwps AMD Workload Profiling Kernel
+amdxata amdxata Kernel 4/30/2015 8:55:35 PM
+AppID AppID Driver Kernel
+AppleSSD Apple Solid State Driv Kernel 11/11/2019 4:24:17 PM
+applockerflt Smartlocker Filter Dri Kernel
+aqnic650 Marvell AQtion Network Kernel 10/22/2021 4:42:21 AM
+arcsas Adaptec SAS/SATA-II RA Kernel 4/9/2015 3:12:07 PM
+AsyncMac RAS Asynchronous Media Kernel
+atapi IDE Channel Kernel
+b06bdrv QLogic Network Adapter Kernel 5/25/2016 3:03:08 AM
+bam Background Activity Mo Kernel
+BasicDisplay BasicDisplay Kernel
+BasicRender BasicRender Kernel
+bcmfn2 bcmfn2 Service Kernel 10/31/2016 10:09:15 PM
+BdNet Avira Network Filter Kernel 11/21/2024 7:09:41 AM
+BdSentry Avira Sentry Driver File System 12/8/2024 3:14:00 AM
+Beep Beep Kernel
+bfs Brokering File System File System
+bindflt Windows Bind Filter Dr File System
+bowser Browser File System
+BthA2dp Microsoft Bluetooth A2 Kernel
+BthEnum Bluetooth Enumerator S Kernel
+BthHFAud Microsoft Bluetooth Ha Kernel
+BthHFEnum Microsoft Bluetooth Ha Kernel
+BthLEEnum Bluetooth Low Energy D Kernel
+BthMini Bluetooth Radio Driver Kernel
+BTHMODEM Bluetooth Modem Commun Kernel
+BthPan Bluetooth Device (Pers Kernel
+BTHPORT Bluetooth Port Driver Kernel
+BTHUSB Bluetooth Radio USB Dr Kernel
+bttflt Microsoft Hyper-V VHDP Kernel
+buttonconver Service for Portable D Kernel
+CAD Charge Arbitration Dri Kernel
+CDD Canonical Display Driv Kernel
+cdfs CD/DVD File System Rea File System
+cdrom CD-ROM Driver Kernel
+cht4iscsi cht4iscsi Kernel 2/5/2019 8:51:31 AM
+cht4vbd Chelsio Virtual Bus Dr Kernel 2/5/2019 8:47:51 AM
+CimFS CimFS File System
+circlass Consumer IR Devices Kernel
+CldFlt Windows Cloud Files Fi File System
+CLFS Common Log (CLFS) Kernel
+CmBatt Microsoft ACPI Control Kernel
+CNG CNG Kernel
+cnghwassist CNG Hardware Assist al Kernel
+CompositeBus Composite Bus Enumerat Kernel
+condrv Console Driver Kernel
+dam Desktop Activity Moder Kernel
+dc1-controll Xbox Peripherals Drive Kernel
+devmap Usermode Device Mapper Kernel
+Dfsc DFS Namespace Client D File System
+dg_ssudbus SAMSUNG Mobile USB Com Kernel 9/23/2024 4:31:56 AM
+disk Disk Driver Kernel
+DisplayMux Microsoft DisplayMux Kernel
+dmvsc dmvsc Kernel
+drmkaud Microsoft Trusted Audi Kernel
+DXGKrnl LDDM Graphics Subsyste Kernel
+ebdrv QLogic 10 Gigabit Ethe Kernel 11/15/2020 5:12:10 AM
+ebdrv0 QLogic Legacy Ethernet Kernel 11/7/2020 5:07:41 AM
+EhStorClass Enhanced Storage Filte Kernel
+EhStorTcgDrv Microsoft driver for s Kernel
+ErrDev Microsoft Hardware Err Kernel
+ESProtection Malwarebytes Anti-Expl Kernel 6/3/2025 4:41:04 AM
+ExecutionCon CPU Scheduler for High Kernel
+exfat exFAT File System Driv File System
+fastfat FAT12/16/32 File Syste File System
+fdc Floppy Disk Controller Kernel
+FileCrypt FileCrypt File System
+FileInfo File Information FS Mi File System
+Filetrace Filetrace File System
+flpydisk Floppy Disk Driver Kernel
+FltMgr FltMgr File System
+FsDepends File System Dependency File System
+fvevol BitLocker Drive Encryp Kernel
+gencounter Microsoft Hyper-V Gene Kernel
+genericusbfn Generic USB Function C Kernel
+GenPass Microsoft GenPass Driv Kernel
+GPIOClx0101 Microsoft GPIO Class E Kernel
+HdAudAddServ Microsoft 1.1 UAA Func Kernel
+HDAudBus Microsoft UAA Bus Driv Kernel
+HidBatt HID UPS Battery Driver Kernel
+HidBth Microsoft Bluetooth HI Kernel
+hidi2c Microsoft I2C HID Mini Kernel
+hidinterrupt Common Driver for HID Kernel
+HidIr Microsoft Infrared HID Kernel
+hidspi Microsoft SPI HID Mini Kernel
+HidSpiCx HidSpi KMDF Class Exte Kernel
+HidUsb Microsoft HID Class Dr Kernel
+HpSAMD HpSAMD Kernel 3/26/2013 5:36:54 PM
+Hsp Microsoft Pluton Servi Kernel
+HTTP HTTP Service Kernel
+hvcrash hvcrash Kernel
+hvservice Microsoft Hypervisor S Kernel
+HwNClx0101 Microsoft Hardware Not Kernel
+hwpolicy Hardware Policy Driver Kernel
+hyperkbd hyperkbd Kernel
+HyperVideo HyperVideo Kernel
+I3CHost I3C Host Controller Se Kernel
+i8042prt i8042 Keyboard and PS/ Kernel
+iagpio Intel Serial IO GPIO C Kernel 7/23/2018 5:04:46 AM
+iai2c Intel(R) Serial IO I2C Kernel 7/23/2018 5:04:39 AM
+iaLPSS2i_GPI Intel(R) Serial IO GPI Kernel 4/19/2018 3:53:24 AM
+iaLPSS2i_GPI Intel(R) Serial IO GPI Kernel 4/17/2018 5:25:15 AM
+iaLPSS2i_GPI Intel(R) Serial IO GPI Kernel 4/17/2018 3:07:03 AM
+iaLPSS2i_GPI Intel(R) Serial IO GPI Kernel 5/16/2018 1:46:36 AM
+iaLPSS2i_I2C Intel(R) Serial IO I2C Kernel 4/19/2018 3:52:58 AM
+iaLPSS2i_I2C Intel(R) Serial IO I2C Kernel 4/17/2018 5:24:40 AM
+iaLPSS2i_I2C Intel(R) Serial IO I2C Kernel 7/15/2019 1:12:12 AM
+iaLPSS2i_I2C Intel(R) Serial IO I2C Kernel 5/16/2018 1:46:02 AM
+iaLPSSi_GPIO Intel(R) Serial IO GPI Kernel 2/2/2015 4:00:09 AM
+iaLPSSi_I2C Intel(R) Serial IO I2C Kernel 2/24/2015 10:52:07 AM
+iaStorAVC Intel Chipset SATA RAI Kernel 9/5/2019 8:07:32 AM
+iaStorV Intel RAID Controller Kernel 4/11/2011 2:48:16 PM
+ibbus Mellanox InfiniBand Bu Kernel 6/19/2019 9:20:09 AM
+IndirectKmd Indirect Displays Kern Kernel
+IntcAzAudAdd Service for Realtek HD Kernel 11/29/2022 5:11:45 AM
+intelide intelide Kernel
+intelpep Intel(R) Power Engine Kernel
+intelpmax Intel(R) Dynamic Devic Kernel
+IntelPMT Intel(R) Platform Moni Kernel
+intelppm Intel Processor Driver Kernel
+iorate Disk I/O Rate Filter D Kernel
+IpFilterDriv IP Traffic Filter Driv Kernel
+IPMIDRV IPMIDRV Kernel
+IPNAT IP Network Address Tra Kernel
+IPT IPT Kernel
+isapnp isapnp Kernel
+iScsiPrt iScsiPort Driver Kernel
+ItSas35i ItSas35i Kernel 3/1/2021 5:15:20 AM
+kbdclass Keyboard Class Driver Kernel
+kbdhid Keyboard HID Driver Kernel
+kdnic Microsoft Kernel Debug Kernel
+kdnic_legacy Microsoft Kernel Debug Kernel
+KSecDD KSecDD Kernel
+KSecPkg KSecPkg Kernel
+KslD KslD Kernel
+ksthunk Kernel Streaming Thunk Kernel
+lltdio Link-Layer Topology Di Kernel
+LSI_SAS LSI_SAS Kernel 3/25/2015 3:36:48 PM
+LSI_SAS2i LSI_SAS2i Kernel 8/2/2017 9:29:59 AM
+LSI_SAS3i LSI_SAS3i Kernel 8/21/2020 3:33:28 AM
+luafv UAC File Virtualizatio File System
+mausbhost MA-USB Host Controller Kernel
+mausbip MA-USB IP Filter Drive Kernel
+mbamchameleo mbamchameleon File System 9/22/2025 8:07:46 AM
+MbamElam MbamElam Kernel 1/31/2025 5:27:36 PM
+MBAMFarflt MBAMFarflt File System 10/6/2025 1:58:18 PM
+MBAMProtecti MBAMProtection Kernel 7/18/2025 11:07:12 AM
+MBAMSwissArm MBAMSwissArmy Kernel 8/28/2025 11:11:10 AM
+MBAMWebProte MBAMWebProtection Kernel 5/28/2025 9:42:56 AM
+MbbCx MBB Network Adapter Cl Kernel
+megasas2i megasas2i Kernel 1/22/2020 4:57:48 AM
+megasas35i megasas35i Kernel 1/12/2021 2:59:10 AM
+megasr megasr Kernel 6/3/2013 6:02:39 PM
+MEIx64 Intel(R) Management En Kernel 2/8/2024 4:23:54 PM
+Microsoft_Bl Microsoft Bluetooth Av Kernel
+mlx4_bus Mellanox ConnectX Bus Kernel 6/19/2019 9:21:08 AM
+MMCSS Multimedia Class Sched Kernel
+Modem Modem Kernel
+monitor Microsoft Monitor Clas Kernel
+mouclass Mouse Class Driver Kernel
+mouhid Mouse HID Driver Kernel
+mountmgr Mount Point Manager Kernel
+mpi3drvi mpi3drvi Kernel 11/16/2021 5:22:38 PM
+mpsdrv Windows Defender Firew Kernel
+MRxDAV WebDav Client Redirect File System
+mrxsmb SMB MiniRedirector Wra File System
+mrxsmb20 SMB 2.0 MiniRedirector File System
+MsBridge Microsoft MAC Bridge Kernel
+Msfs Msfs File System
+msgpiowin32 Common Driver for Butt Kernel
+mshidkmdf Pass-through HID to KM Kernel
+mshidumdf Pass-through HID to UM Kernel
+msisadrv msisadrv Kernel
+MSKSSRV Microsoft Streaming Se Kernel
+MsLldp Microsoft Link-Layer D Kernel
+MSPCLOCK Microsoft Streaming Cl Kernel
+MSPQM Microsoft Streaming Qu Kernel
+MsQuic MsQuic Kernel
+MsQuicPrev MSQUIC Kernel
+MsRPC MsRPC Kernel
+mssmbios Microsoft System Manag Kernel
+MSTEE Microsoft Streaming Te Kernel
+MTConfig Microsoft Input Config Kernel
+MTKBTFilterx MTK BT Filter Driver Kernel 10/28/2022 12:43:58 PM
+mtkwlex Mediatek PCI LE Extens Kernel 11/1/2022 12:40:21 PM
+Mup Mup File System
+mvumis mvumis Kernel 5/23/2014 4:39:04 PM
+NativeWifiP NativeWiFi Filter Kernel
+ndfltr NetworkDirect Service Kernel 6/19/2019 9:18:42 AM
+NDIS NDIS System Driver Kernel
+NdisCap Microsoft NDIS Capture Kernel
+NdisImPlatfo Microsoft Network Adap Kernel
+NdisTapi Remote Access NDIS TAP Kernel
+Ndisuio NDIS Usermode I/O Prot Kernel
+NdisVirtualB Microsoft Virtual Netw Kernel
+NdisWan Remote Access NDIS WAN Kernel
+ndiswanlegac Remote Access LEGACY N Kernel
+NDKPerf NDKPerf Driver Kernel
+NDKPing NDKPing Driver Kernel
+ndproxy NDIS Proxy Driver Kernel
+Ndu Windows Network Data U Kernel
+NetAdapterCx Network Adapter WDF Cl Kernel
+NetBIOS NetBIOS Interface File System
+NetBT NetBT Kernel
+netprotectio netprotection_network_ Kernel 2/18/2025 10:38:20 PM
+netvsc netvsc Kernel
+NetworkPriva Microsoft Network Priv Kernel
+Netwtw10 ___ Intel(R) Wireless Kernel 1/17/2021 6:31:33 AM
+Npfs Npfs File System
+Null Null Kernel
+nvdimm Microsoft NVDIMM devic Kernel
+NVHDA Service for NVIDIA Hig Kernel 6/3/2025 12:59:09 AM
+nvlddmkm nvlddmkm Kernel 10/29/2025 4:17:34 PM
+nvmedisk Microsoft NVMe disk dr Kernel
+nvraid nvraid Kernel 4/21/2014 2:28:42 PM
+nvstor nvstor Kernel 4/21/2014 2:34:03 PM
+nvvad_WaveEx NVIDIA Virtual Audio D Kernel 2/28/2024 7:30:52 AM
+P9Rdr Plan 9 Redirector Driv Kernel
+Parport Parallel port driver Kernel
+partmgr Partition driver Kernel
+pci PCI Bus Driver Kernel
+pciide pciide Kernel
+pcmcia pcmcia Kernel
+pcw Performance Counters f Kernel
+pdc pdc Kernel
+PEAUTH PEAUTH Kernel
+percsas2i percsas2i Kernel 3/14/2016 8:50:11 PM
+percsas3i percsas3i Kernel 6/1/2018 5:47:02 PM
+PktMon Packet Monitor Driver Kernel
+PktMonApi Packet Monitor Export Kernel
+PlutonHeci Microsoft Pluton Secur Kernel
+PlutonHsp2 Microsoft Pluton Servi Kernel
+pmem Microsoft persistent m Kernel
+PNPMEM Microsoft Memory Modul Kernel
+portcfg portcfg Kernel
+PptpMiniport WAN Miniport (PPTP) Kernel
+PRM Microsoft PRM Driver Kernel
+Processor Processor Driver Kernel
+Psched QoS Packet Scheduler Kernel
+pvscsi pvscsi Storage Control Kernel 5/19/2021 11:55:26 PM
+QWAVEdrv QWAVE driver Kernel
+Ramdisk Windows RAM Disk Drive Kernel
+RasAcd Remote Access Auto Con Kernel
+RasAgileVpn WAN Miniport (IKEv2) Kernel
+Rasl2tp WAN Miniport (L2TP) Kernel
+RasPppoe Remote Access PPPOE Dr Kernel
+RasSstp WAN Miniport (SSTP) Kernel
+rdbss Redirected Buffering S File System
+rdpbus Remote Desktop Device Kernel
+RDPDR Remote Desktop Device Kernel
+rdyboost ReadyBoost Kernel
+ReFS ReFS File System
+ReFSv1 ReFSv1 File System
+RFCOMM Bluetooth Device (RFCO Kernel
+rhproxy Resource Hub proxy dri Kernel
+rspndr Link-Layer Topology Di Kernel
+rt640x64 Realtek RT640 NT Drive Kernel 11/21/2023 5:15:43 AM
+rtcx21 Realtek NetAdapter Dri Kernel 10/4/2021 2:54:20 AM
+rtp1 rtp1 File System 4/30/2025 1:20:29 PM
+rtp2 rtp2 File System 4/30/2025 1:21:11 PM
+rtp_elam rtp_elam Kernel 12/19/2024 3:27:43 AM
+RvNetMP60 Famatech Radmin VPN Mi Kernel 8/11/2022 8:40:11 AM
+s3cap s3cap Kernel
+sbp2port SBP-2 Transport/Protoc Kernel
+scfilter Smart card PnP Class F Kernel
+scmbus Microsoft Storage Clas Kernel
+sdbus sdbus Kernel
+SdcaHidInbox SoundWire HID Driver Kernel
+SdcaMfdInbox SoundWire Audio Multif Kernel
+sdstor SD Storage Port Driver Kernel
+SerCx Serial UART Support Li Kernel
+SerCx2 Serial UART Support Li Kernel
+Serenum Serenum Filter Driver Kernel
+Serial Serial port driver Kernel
+sermouse Serial Mouse Driver Kernel
+sfloppy High-Capacity Floppy D Kernel
+SiSRaid2 SiSRaid2 Kernel 9/24/2008 2:28:20 PM
+SiSRaid4 SiSRaid4 Kernel 10/1/2008 5:56:04 PM
+SmartSAMD SmartSAMD Kernel 2/21/2019 12:54:44 PM
+spaceparser spaceparser Kernel
+spaceport Storage Spaces Driver Kernel
+SpbCx Simple Peripheral Bus Kernel
+srv2 Server SMB 2.xxx Drive File System
+srvnet srvnet File System
+ssudmdm SAMSUNG Mobile USB Mo Kernel 9/23/2024 4:30:57 AM
+SteamStreami Steam Streaming Microp Kernel 7/28/2017 11:33:15 AM
+SteamStreami Steam Streaming Speake Kernel 7/20/2017 8:56:15 PM
+stexstor stexstor Kernel 11/26/2012 7:02:51 PM
+storahci Microsoft Standard SAT Kernel
+storflt Microsoft Hyper-V Stor Kernel
+stornvme Microsoft Standard NVM Kernel
+storqosflt Storage QoS Filter Dri File System
+storufs Microsoft Universal Fl Kernel
+storvsc storvsc Kernel
+swenum Software Bus Driver Kernel
+Tcpip TCP/IP Protocol Driver Kernel
+Tcpip6 @todo.dll,-100;Microso Kernel
+tcpipreg @%SystemRoot%\System32 Kernel
+tdx NetIO Legacy TDI Suppo Kernel
+terminpt Microsoft Remote Deskt Kernel
+ThermalFilte Microsoft Thermal Filt Kernel
+TPM TPM Kernel
+TsUsbFlt Remote Desktop USB Hub Kernel
+TsUsbGD Remote Desktop Generic Kernel
+tunnel Microsoft Tunnel Minip Kernel
+UASPStor USB Attached SCSI (UAS Kernel
+UcmCx0101 USB Connector Manager Kernel
+UcmTcpciCx01 UCM-TCPCI KMDF Class E Kernel
+UcmUcsiAcpiC UCM-UCSI ACPI Client Kernel
+UcmUcsiCx010 UCM-UCSI KMDF Class Ex Kernel
+UCPD UCPD File System
+Ucx01000 USB Host Support Libra Kernel
+UdeCx USB Device Emulation S Kernel
+udfs udfs File System
+UEFI Microsoft UEFI Driver Kernel
+Ufx01000 USB Function Class Ext Kernel
+UfxChipidea USB Chipidea Controlle Kernel
+ufxsynopsys USB Synopsys Controlle Kernel
+uiomap Microsoft UIO Mapper D Kernel
+umbus UMBus Enumerator Drive Kernel
+UmPass Microsoft UMPass Drive Kernel
+UnionFS UnionFS File System
+UrsChipidea Chipidea USB Role-Swit Kernel
+UrsCx01000 USB Role-Switch Suppor Kernel
+UrsSynopsys Synopsys USB Role-Swit Kernel
+usb-platform Usb Platform Detection Kernel
+Usb4DeviceRo USB4 Device Router Ser Kernel
+Usb4HostRout USB4 Host Router Servi Kernel
+usbaudio USB Audio Driver (WDM) Kernel
+usbaudio2 USB Audio 2.0 Service Kernel
+usbccgp Microsoft USB Generic Kernel
+usbcir eHome Infrared Receive Kernel
+usbehci Microsoft USB 2.0 Enha Kernel
+usbhub Microsoft USB Standard Kernel
+USBHUB3 SuperSpeed Hub Kernel
+usbohci Microsoft USB Open Hos Kernel
+usbprint Microsoft USB PRINTER Kernel
+usbser Microsoft USB Serial D Kernel
+USBSTOR USB Mass Storage Drive Kernel
+usbuhci Microsoft USB Universa Kernel
+USBXHCI USB xHCI Compliant Hos Kernel
+VBoxNetAdp VirtualBox NDIS 6.0 Mi Kernel 10/17/2025 6:31:30 AM
+VBoxNetLwf VirtualBox NDIS6 Bridg Kernel 10/17/2025 6:31:30 AM
+VBoxSup VirtualBox Service Kernel 10/17/2025 6:32:47 AM
+VBoxUSBMon VirtualBox USB Monitor Kernel 10/17/2025 6:31:30 AM
+vdrvroot Microsoft Virtual Driv Kernel
+VerifierExt Driver Verifier Extens Kernel
+vhdmp vhdmp Kernel
+vhf Virtual HID Framework Kernel
+Vid Vid Kernel
+VirtualRende VirtualRender Kernel
+vmbus Virtual Machine Bus Kernel
+VMBusHID VMBusHID Kernel
+vmgid Microsoft Hyper-V Gues Kernel
+voicemodvad Voicemod Driver Kernel 10/8/2025 3:51:14 AM
+volmgr Volume Manager Driver Kernel
+volmgrx Dynamic Volume Manager Kernel
+volsnap Volume Shadow Copy dri Kernel
+volume Volume driver Kernel
+vpci Microsoft Hyper-V Virt Kernel
+vsmraid vsmraid Kernel 4/22/2014 3:21:41 PM
+VSTXRAID VIA StorX Storage RAID Kernel 1/21/2013 2:00:28 PM
+vwifibus Virtual Wireless Bus D Kernel
+vwififlt Virtual WiFi Filter Dr Kernel
+vwifimp Virtual WiFi Miniport Kernel
+WacomPen Wacom Serial Pen HID D Kernel
+wanarp Remote Access IP ARP D Kernel
+wanarpv6 Remote Access IPv6 ARP Kernel
+wcifs Windows Container Isol File System
+WdBoot Microsoft Defender Ant Kernel
+Wdf01000 Kernel Mode Driver Fra Kernel
+WdFilter Microsoft Defender Ant File System
+wdiwifi WDI Driver Framework Kernel
+WdmCompanion WdmCompanionFilter Kernel
+WdNisDrv Microsoft Defender Ant Kernel
+WFPLWFS Microsoft Windows Filt Kernel
+Wificx Wifi Network Adapter C Kernel
+WIMMount WIMMount File System
+WinAccelCx01 Microsoft Accelerator Kernel
+WindowsTrust Windows Trusted Execut Kernel
+WindowsTrust Microsoft Windows Trus Kernel
+wini3ctarget Generic driver for I3C Kernel
+WinMad WinMad Service Kernel 6/19/2019 9:18:11 AM
+WinNat Windows NAT Driver Kernel
+wintun wintun Kernel 10/13/2021 8:24:47 AM
+WINUSB WinUsb Driver Kernel
+WinVerbs WinVerbs Service Kernel 6/19/2019 9:18:12 AM
+WmiAcpi Microsoft Windows Mana Kernel
+Wof Windows Overlay File S File System
+WpdUpFltr WPD Upper Class Filter Kernel
+ws2ifsl Winsock IFS Driver Kernel
+wtd wtd Kernel
+WudfPf User Mode Driver Frame Kernel
+WUDFRd Windows Driver Foundat Kernel
+WUDFWpdFs WPD File System driver Kernel
+WUDFWpdMtp WUDFWpdMtp Kernel
+xboxgip Xbox Game Input Protoc Kernel
+xinputhid XINPUT HID Filter Driv Kernel
+EasyAntiChea EasyAntiCheat_EOSSys Kernel 11/12/2025 7:12:32 AM
+mullvad-spli Mullvad Split Tunnel S Kernel 9/22/2022 5:41:33 AM</pre>
+            </div>
+        </div>
+
+        <div class="card">
+            <input type="checkbox" id="c7">
+            <label class="trigger" for="c7">07 • COMPLETE NETWORK CONFIGURATION (ipconfig /all)</label>
             <div class="shine"></div>
             <div class="content">
                 <pre>Windows IP Configuration
@@ -349,6 +934,7 @@ UnityCrashHandler64.exe      18728 Console                 1    27,432 K</pre>
    DNS Suffix Search List. . . . . . : lan
 
 Ethernet adapter Radmin VPN:
+
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Famatech Radmin VPN Ethernet Adapter
    Physical Address. . . . . . . . . : 02-50-04-78-AA-28
@@ -368,6 +954,7 @@ Ethernet adapter Radmin VPN:
    NetBIOS over Tcpip. . . . . . . . : Enabled
 
 Ethernet adapter Ethernet 3:
+
    Media State . . . . . . . . . . . : Media disconnected
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Realtek PCIe GbE Family Controller
@@ -376,6 +963,7 @@ Ethernet adapter Ethernet 3:
    Autoconfiguration Enabled . . . . : Yes
 
 Unknown adapter CloudflareWARP:
+
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Cloudflare WARP Interface Tunnel
    Physical Address. . . . . . . . . :
@@ -391,6 +979,7 @@ Unknown adapter CloudflareWARP:
    NetBIOS over Tcpip. . . . . . . . : Enabled
 
 Ethernet adapter Ethernet 5:
+
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : VirtualBox Host-Only Ethernet Adapter
    Physical Address. . . . . . . . . : 0A-00-27-00-00-13
@@ -405,6 +994,7 @@ Ethernet adapter Ethernet 5:
    NetBIOS over Tcpip. . . . . . . . : Enabled
 
 Wireless LAN adapter Local Area Connection* 11:
+
    Media State . . . . . . . . . . . : Media disconnected
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter #3
@@ -413,6 +1003,7 @@ Wireless LAN adapter Local Area Connection* 11:
    Autoconfiguration Enabled . . . . : Yes
 
 Wireless LAN adapter Local Area Connection* 12:
+
    Media State . . . . . . . . . . . : Media disconnected
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter #4
@@ -421,6 +1012,7 @@ Wireless LAN adapter Local Area Connection* 12:
    Autoconfiguration Enabled . . . . : Yes
 
 Wireless LAN adapter Wi-Fi 2:
+
    Connection-specific DNS Suffix  . : lan
    Description . . . . . . . . . . . : RZ616 Wi-Fi 6E 160MHz
    Physical Address. . . . . . . . . : AC-F2-3C-D8-15-17
@@ -450,6 +1042,7 @@ Wireless LAN adapter Wi-Fi 2:
                                        lan
 
 Ethernet adapter Bluetooth Network Connection 2:
+
    Media State . . . . . . . . . . . : Media disconnected
    Connection-specific DNS Suffix  . :
    Description . . . . . . . . . . . : Bluetooth Device (Personal Area Network) #2
@@ -462,9 +1055,7 @@ Ethernet adapter Bluetooth Network Connection 2:
     </div>
 
     <div class="footer">
-        FXTAL • Ω² ETERNAL CORE • 03 DECEMBER 2025<br>
-        ALL DATA VERBATIM • HOVER FOR SHINE • SMOOTH ARRAY ACCORDION<br>
-        YOUR SOUL IS SEALED • FOREVER
+        HXSE • Ω² ETERNAL CORE • 03 DECEMBER 2025<br>
     </div>
 </div>
 </body>
