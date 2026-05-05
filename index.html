@@ -2,203 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HXZE • MERRY CHRISTMAS • Ω²</title>
+    <title>HXZE • NEON VOID • Ω²</title>
     <style>
+        :root {
+            --bg-purple: #1a0033;
+            --accent-orange: #ff8c00;
+            --text-purple: #e0b0ff;
+            --terminal-black: #0d001a;
+        }
         body {
-            background: #000;
-            color: #0f0;
+            background: var(--bg-purple);
+            background: radial-gradient(circle, #2e0054 0%, #0d001a 100%);
+            color: var(--text-purple);
             font-family: 'Consolas', monospace;
-            margin: 0;
-            padding: 40px 20px;
-            min-height: 100vh;
-            background: radial-gradient(circle at 50% 50%, #001133 0%, #000 80%);
-            position: relative;
-            overflow-x: hidden;
+            margin: 0; padding: 20px;
         }
-
-        /* Falling snow */
-        .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
-        .snowflake { position: absolute; color: #ffffff; font-size: 1.5em; opacity: 0.95; animation: fall linear infinite, sway 4s ease-in-out infinite alternate; user-select: none; }
-        @keyframes fall { 0% { top: -10%; } 100% { top: 110%; } }
-        @keyframes sway { from { transform: translateX(0); } to { transform: translateX(100px); } }
-
-        .container { max-width: 1600px; margin: auto; position: relative; z-index: 1; }
-
         h1 {
-            font-size: 5.5rem;
+            color: var(--accent-orange);
             text-align: center;
-            margin: 60px 0 80px;
-            background: linear-gradient(90deg, #f00, #0ff, #0f0, #f00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 70px #0f0;
+            font-size: 4rem;
+            text-shadow: 0 0 20px rgba(255, 140, 0, 0.6);
+            margin-bottom: 50px;
         }
-
         .report {
-            background: #000;
-            border: 4px solid #f00;
-            border-image: linear-gradient(45deg, #f00, #0f0, #fff, #f00) 1;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 8px 40px rgba(255, 0, 0, 0.4);
-            color: #0ff;
-            white-space: pre-wrap;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            position: relative;
-            z-index: 2;
-            margin-bottom: 30px;
+            background: var(--terminal-black);
+            border: 2px solid var(--accent-orange);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 40px rgba(128, 0, 128, 0.5);
+            max-width: 1000px; margin: auto;
         }
-
-        /* C2 Console Styling */
-        #c2-interface {
-            display: none; /* Hidden by default */
-            border: 4px solid #0ff;
-            border-image: linear-gradient(45deg, #0ff, #00f, #0ff) 1;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-            margin-bottom: 40px;
+        #c2-console {
+            display: none;
+            margin-top: 20px;
+            border-color: #f0f; /* Hot pink/purple border for console */
         }
-
-        .console-log {
-            height: 250px;
-            overflow-y: auto;
-            background: #050505;
-            padding: 15px;
-            border: 1px solid #333;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #fff;
+        .log-view {
+            height: 200px; overflow-y: auto;
+            border: 1px solid #444; background: #000;
+            padding: 10px; font-size: 0.9rem; margin-bottom: 10px;
         }
-
-        .input-area { display: flex; gap: 10px; }
-        .input-area input {
-            flex-grow: 1;
-            background: #111;
-            border: 1px solid #0ff;
-            color: #0ff;
-            padding: 10px;
-            font-family: 'Consolas', monospace;
+        .input-box {
+            width: 80%; background: #000; border: 1px solid var(--accent-orange);
+            color: var(--accent-orange); padding: 10px;
         }
-        .input-area button {
-            background: #0ff;
-            color: #000;
-            border: none;
-            padding: 10px 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .footer { text-align: center; margin: 60px auto; font-size: 1.5rem; color: #f00; }
-        .access-btn {
-            background: transparent;
-            border: 1px solid #f00;
-            color: #f00;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: 'Consolas', monospace;
-            transition: 0.3s;
-        }
-        .access-btn:hover { background: #f00; color: #000; }
-
-        .corner-image {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            max-width: 300px;
-            border: 5px solid #0f0;
-            box-shadow: 0 0 50px #0f0;
-            border-radius: 15px;
-            z-index: 20;
+        button {
+            background: var(--accent-orange); color: #000;
+            border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;
         }
     </style>
 </head>
 <body>
-
-    <div class="snowflakes" id="snow-container"></div>
-
     <div class="container">
-        <h1>HXZE • MERRY CHRISTMAS • Ω²</h1>
-
-        <!-- C2 INTERFACE SECTION -->
-        <div class="report" id="c2-interface">
-<span style="color: #0ff; font-weight: bold;">[ CENTRAL COMMAND OVERRIDE - SESSION ACTIVE ]</span>
---------------------------------------------------------------------------------
-<div class="console-log" id="console-log">
-[SYSTEM] Waiting for uplink...
-[STUB_CONFIG] Static Beacon set to: hxze.github.io/config.json
-</div>
-<div class="input-area">
-    <input type="text" id="cmd-input" placeholder="Execute global command..." onkeydown="if(event.key==='Enter') sendC2Command()">
-    <button onclick="sendC2Command()">TRANSMIT</button>
-</div>
-        </div>
-
+        <h1>HXZE // VOID-C2</h1>
         <div class="report">
-╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
-▓░█░░░█░▓ [ SYSTEM INFORMATION REPORT - FXTAL ] ▓░█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓
-└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
-GENERATED: Sun Dec 7 09:17:57 PM MST 2025
-HOSTNAME: FXTAL
-CURRENT USER: latin (Administrator)
-OS: Windows 11 Home (Build 26200 - Insider/Canary)
-STATUS: System Online | 4 Days Uptime
-
-(Rest of your System Report content goes here...)
+            <div id="system-info">
+                [ STATUS: ENCRYPTED UPLINK ]<br>
+                [ OS: WINDOWS 11 / PYTHON 3.14 STABLE ]<br>
+                [ BEACON: ACTIVE ]
+            </div>
+            
+            <div id="c2-console">
+                <hr style="border: 0.5px solid #444;">
+                <div class="log-view" id="log"></div>
+                <input type="text" id="cmd" class="input-box" placeholder="Awaiting Command...">
+                <button onclick="transmit()">SEND</button>
+            </div>
         </div>
-
-        <div class="footer">
-            <button class="access-btn" onclick="toggleC2()">INITIATE C2 UPLINK</button>
-        </div>
+        <p style="text-align:center; margin-top:20px;">
+            <button onclick="document.getElementById('c2-console').style.display='block'">ACCESS OVERRIDE</button>
+        </p>
     </div>
 
-    <img src="fds.png" class="corner-image">
-
     <script>
-        // Generate Snow
-        const snowContainer = document.getElementById('snow-container');
-        const flakes = ['❄', '❅', '❆'];
-        for (let i = 0; i < 50; i++) {
-            const div = document.createElement('div');
-            div.className = 'snowflake';
-            div.innerHTML = flakes[Math.floor(Math.random() * flakes.length)];
-            div.style.left = Math.random() * 100 + '%';
-            div.style.animationDuration = (Math.random() * 10 + 10) + 's';
-            div.style.animationDelay = Math.random() * 5 + 's';
-            div.style.fontSize = (Math.random() * 1 + 1) + 'em';
-            snowContainer.appendChild(div);
-        }
-
-        // C2 Logic
-        function toggleC2() {
-            const ui = document.getElementById('c2-interface');
-            ui.style.display = ui.style.display === 'block' ? 'none' : 'block';
-        }
-
-        async function sendC2Command() {
-            const input = document.getElementById('cmd-input');
-            const log = document.getElementById('console-log');
-            const cmd = input.value;
-            if(!cmd) return;
-
-            log.innerHTML += `<div><span style="color:#0ff;">></span> ${cmd}</div>`;
-            
-            // This points to your LOCAL tunnel address
-            const C2_URL = "http://YOUR_TUNNEL_URL_HERE/api/execute"; 
-
-            try {
-                const res = await fetch(C2_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ command: cmd, client_id: "ALL" })
-                });
-                const data = await res.json();
-                log.innerHTML += `<div style="color:#0f0;">[RESPONSE] ${data.output}</div>`;
-            } catch (e) {
-                log.innerHTML += `<div style="color:#f00;">[ERROR] Failed to reach C2 Backend. Ensure tunnel is active.</div>`;
-            }
-            input.value = '';
-            log.scrollTop = log.scrollHeight;
+        async function transmit() {
+            const cmd = document.getElementById('cmd').value;
+            const log = document.getElementById('log');
+            log.innerHTML += `<div style="color:var(--accent-orange)">[OUT] ${cmd}</div>`;
+            // Add your fetch logic here as discussed previously
+            document.getElementById('cmd').value = '';
         }
     </script>
 </body>
