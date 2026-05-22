@@ -1,0 +1,1 @@
+{"name":"spaxx-site","version":"1.0.0","scripts":{"start":"npx serve -s ."}} 
