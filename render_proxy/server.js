@@ -20,6 +20,10 @@ app.get('/ping', (req, res) => {
   res.send('ok');
 });
 
+// Serve the static files of the main website (index.html, etc)
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
+
 // Any other HTTP requests
 app.use((req, res) => {
   res.status(404).send('Not Found');

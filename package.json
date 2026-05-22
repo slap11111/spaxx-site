@@ -1,1 +1,1 @@
-{"name":"spaxx-site","version":"1.0.0","scripts":{"start":"npx serve -s ."}} 
+{"name":"spaxx-site","version":"1.0.0","scripts":{"start":"node render_proxy/server.js"},"dependencies":{"express":"^4.18.2","ws":"^8.16.0"}} 
