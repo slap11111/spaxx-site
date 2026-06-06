@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const crypto = require('crypto');
+const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
@@ -16,19 +17,75 @@ function generateId() {
   return crypto.randomBytes(8).toString('hex');
 }
 
+// ========== NEW: Parse JSON bodies for location data ==========
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ========== LOCATION ENDPOINTS ==========
+app.post('/location', (req, res) => {
+  const locationData = req.body;
+  const timestamp = new Date().toISOString();
+  
+  console.log(`[LOCATION] ${timestamp}`);
+  console.log(`  User: ${locationData.user || 'unknown'}`);
+  console.log(`  Computer: ${locationData.computer || 'unknown'}`);
+  console.log(`  Location: ${locationData.location || 'not provided'}`);
+  console.log(`  IP: ${req.ip || 'unknown'}`);
+  console.log(`  Full data: ${JSON.stringify(locationData)}`);
+  console.log('-'.repeat(50));
+  
+  // Store in memory
+  if (!global.locationLogs) {
+    global.locationLogs = [];
+  }
+  global.locationLogs.push({
+    timestamp,
+    ip: req.ip,
+    ...locationData
+  });
+  
+  res.json({ 
+    status: 'ok', 
+    message: 'Location received',
+    id: global.locationLogs.length 
+  });
+});
+
+app.get('/locations', (req, res) => {
+  res.json({
+    total: global.locationLogs?.length || 0,
+    logs: global.locationLogs || []
+  });
+});
+
+// ========== EXISTING ENDPOINTS ==========
 app.get('/ping', (req, res) => {
   res.send('ok');
 });
 
-// Serve the static files of the main website (index.html, etc)
-const path = require('path');
+app.get('/location-test', (req, res) => {
+  res.send(`
+    <html>
+      <head><title>Location API</title></head>
+      <body>
+        <h1>Location API Active</h1>
+        <p>POST to /location with JSON data</p>
+        <p>Example: {"location":"New York","user":"john","computer":"PC01"}</p>
+        <p><a href="/locations">View all stored locations</a></p>
+      </body>
+    </html>
+  `);
+});
+
+// Serve static files
 app.use(express.static(path.join(__dirname, '..')));
 
-// Any other HTTP requests
+// 404 handler
 app.use((req, res) => {
   res.status(404).send('Not Found');
 });
 
+// ========== WEBSOCKET TUNNEL (existing) ==========
 wss.on('connection', (ws, req) => {
   if (req.url.startsWith('/_tunnel')) {
     if (tunnelWs) {
@@ -90,7 +147,7 @@ wss.on('connection', (ws, req) => {
       tunnelWs.send(JSON.stringify({
         type: 'ws_message',
         req_id: reqId,
-        data: message.toString() // stubs send JSON string frames
+        data: message.toString()
       }));
     }
   });
@@ -114,4 +171,5 @@ server.on('upgrade', (request, socket, head) => {
 
 server.listen(port, () => {
   console.log(`Render Tunnel Proxy listening on port ${port}`);
+  console.log(`Location endpoint ready at /location`);
 });
